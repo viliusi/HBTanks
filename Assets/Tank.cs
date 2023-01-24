@@ -7,7 +7,6 @@ using UnityEngine;
 
 namespace Assets
 {
-
     public class Tank
     {
         public ITankControler TankControler;
