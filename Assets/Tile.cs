@@ -26,6 +26,7 @@ namespace Assets
 
         public enum Direction
         {
+            Invalid = -1,
             North = 0,
             East = 1,
             South = 2,
@@ -34,29 +35,36 @@ namespace Assets
 
         public bool[] Directions;
 
+        public Tile()
+        {
+            Directions = new bool[4];
+        }
+
         public Tile(bool[] directions)
         {
+            if (directions.Length != 4)
+                throw new Exception("Can NOT have directions less or more than 4");
             Directions = directions;
         }
 
-        public int GetRandomOpenDirection(Random rand)
+        public Direction GetRandomOpenDirection(Random rand)
         {
             if (Directions.Count(x => !x) == 0)
-                return -1; // No openings
+                return Direction.Invalid; // No openings
             while (true)
             {
                 int dir = rand.Next(0, 4);
                 if (Directions[dir])
                 {
-                    return dir;
+                    return (Direction)dir;
                 }
             }
         }
 
-        public bool this[int index]
+        public bool this[Direction index]
         {
-            get => Directions[index];
-            set => Directions[index] = value;
+            get => Directions[(int)index];
+            set => Directions[(int)index] = value;
         }
     }
 }

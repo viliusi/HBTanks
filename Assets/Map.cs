@@ -30,20 +30,21 @@ namespace Assets
         public int Width;
         public int Height;
 
-        public Map(int tankCount, int width, int height)
+        public Map(int tankCount)
         {
             if (tankCount < 2)
                 throw new ArgumentException("Can NOT have less that 2 tanks on the field");
+            Tanks = new Tank[tankCount];
+        }
+
+        public void ProceduralGenerate(int width, int height, int agentsCount, int seed = int.MinValue)
+        {
             if (width < 0 || height < 0)
                 throw new ArgumentOutOfRangeException("Neither width nor height can be less than zero");
             Width = width;
             Height = height;
-            Tanks = new Tank[tankCount];
             Tiles = new Tile[Width, Height];
-        }
 
-        public void ProceduralGenerate(int agentsCount, int seed = int.MinValue)
-        {
             Random rand;
             if (seed == int.MinValue)
                 rand = new Random();
