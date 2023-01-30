@@ -48,9 +48,9 @@ namespace Assets
         public int Width;
         public int Height;
 
-        /// <summary>
-        /// All lines is based in the top left cornor and goes down or towards the right
-        /// </summary>
+        ///// <summary>
+        ///// All lines is based in the top left cornor and goes down or towards the right
+        ///// </summary>
         public List<Line> Lines = new List<Line>();
 
         public Map(int tankCount)
@@ -60,18 +60,22 @@ namespace Assets
             Tanks = new Tank[tankCount];
         }
 
-        public void ProceduralGenerate(int width, int height, int agentsCount, int seed = int.MinValue)
+        public void ProceduralGenerate(int width, int height, int agentsCount = -1, int seed = int.MinValue)
         {
             if (width < 0 || height < 0)
                 throw new ArgumentOutOfRangeException("Neither width nor height can be less than zero");
             Width = width;
             Height = height;
             Tiles = new Tile[Width, Height];
+            for (int i = 0; i < Width; i++)
+                for (int j = 0; j < Height; j++)
+                    Tiles[i, j] = new Tile();
 
-            System.Random rand;
-            if (seed == int.MinValue)
-                rand = new System.Random();
-            else
+            if (agentsCount == -1)
+                agentsCount = Math.Min(1, Width * Height / 20);
+
+            System.Random rand = new System.Random();
+            if (seed != int.MinValue)
                 rand = new System.Random(seed);
 
             int tilesCount = Height * Width - 1;
@@ -83,6 +87,9 @@ namespace Assets
 
             while (tilesGoneOver < tilesCount)
             {
+                // Set all the Agents random places
+                // Make them go all difrent 
+                // When they hit a allready initilized square, make the wall open so all the agents is connected
 
                 // TESTING
 
@@ -111,7 +118,6 @@ namespace Assets
         private void _GenerateLines()
         {
             Lines.Clear();
-            // Generate lines
             for (int i = 0; i < Height; i++)
             {
                 for (int j = 0; j < Width; j++)
@@ -123,7 +129,17 @@ namespace Assets
                     bool South = !tile[Tile.Direction.South];
                     bool West = !tile[Tile.Direction.West];
 
-                    if (North)
+                    // Used to avoid double lines, so if the left east or top south side is allready there,
+                    // it will also allready have been added
+                    bool LeftEastSide = true;
+                    if (i > 0)
+                        LeftEastSide = Tiles[i - 1, j][Tile.Direction.East];
+                    bool TopSouthSide = true;
+                    if (j > 0)
+                        TopSouthSide = Tiles[i, j - 1][Tile.Direction.South];
+
+
+                    if (North && !TopSouthSide)
                     {
                         Lines.Add(new Line(i, j, i + 1, j));
                     }
@@ -133,9 +149,9 @@ namespace Assets
                     }
                     if (South)
                     {
-                        Lines.Add(new Line(i, j - 1, i + 1, j - 1));
+                        Lines.Add(new Line(i, j - 1, i - 1, j - 1));
                     }
-                    if (West)
+                    if (West && !LeftEastSide)
                     {
                         Lines.Add(new Line(i, j, i, j - 1));
                     }
@@ -149,6 +165,7 @@ namespace Assets
         //public void IsPosValid(FRect body, float rotation)
         public bool IsPositionValid(Tank body)
         {
+            return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
