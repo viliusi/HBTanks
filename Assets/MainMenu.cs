@@ -24,10 +24,10 @@ public class MainMenu : MonoBehaviour
 
     public void Player1()
     {
-        SceneManager.LoadScene(3);
+        SceneManager.LoadScene(1);
     }
 
-    public void Player2()
+    /*public void Player2()
     {
         SceneManager.LoadScene(3);
     }
@@ -40,5 +40,5 @@ public class MainMenu : MonoBehaviour
     public void Player4()
     {
         SceneManager.LoadScene(3);
-    }
+    }*/
 }
